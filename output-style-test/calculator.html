@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>계산기</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1a1a2e;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .calculator {
+      background: #16213e;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      width: 320px;
+    }
+
+    .display {
+      background: #0f3460;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: right;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .display .expression {
+      color: #8899aa;
+      font-size: 14px;
+      min-height: 20px;
+      word-break: break-all;
+    }
+
+    .display .current {
+      color: #e2e8f0;
+      font-size: 36px;
+      font-weight: 300;
+      word-break: break-all;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 18px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    button:active { transform: scale(0.95); }
+
+    .btn-number {
+      background: #1a1a40;
+      color: #e2e8f0;
+    }
+    .btn-number:hover { background: #2a2a50; }
+
+    .btn-operator {
+      background: #e94560;
+      color: white;
+    }
+    .btn-operator:hover { background: #ff6b81; }
+
+    .btn-action {
+      background: #533483;
+      color: white;
+    }
+    .btn-action:hover { background: #6b44a0; }
+
+    .btn-equals {
+      background: #0f3460;
+      color: white;
+      grid-column: span 2;
+    }
+    .btn-equals:hover { background: #1a4a7a; }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="display">
+      <div class="expression" id="expression"></div>
+      <div class="current" id="current">0</div>
+    </div>
+    <div class="buttons" id="buttons">
+      <button class="btn-action" data-action="clear">C</button>
+      <button class="btn-action" data-action="toggle-sign">+/-</button>
+      <button class="btn-action" data-action="percent">%</button>
+      <button class="btn-operator" data-operator="/">÷</button>
+
+      <button class="btn-number" data-number="7">7</button>
+      <button class="btn-number" data-number="8">8</button>
+      <button class="btn-number" data-number="9">9</button>
+      <button class="btn-operator" data-operator="*">×</button>
+
+      <button class="btn-number" data-number="4">4</button>
+      <button class="btn-number" data-number="5">5</button>
+      <button class="btn-number" data-number="6">6</button>
+      <button class="btn-operator" data-operator="-">−</button>
+
+      <button class="btn-number" data-number="1">1</button>
+      <button class="btn-number" data-number="2">2</button>
+      <button class="btn-number" data-number="3">3</button>
+      <button class="btn-operator" data-operator="+">+</button>
+
+      <button class="btn-number" data-number="0">0</button>
+      <button class="btn-number" data-number=".">.</button>
+      <button class="btn-equals" data-action="equals">=</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('current');
+    const expressionDisplay = document.getElementById('expression');
+
+    let currentValue = '0';
+    let previousValue = '';
+    let operator = null;
+    let shouldResetDisplay = false;
+
+    // 이벤트 위임: 버튼 컨테이너에서 한 번에 처리
+    document.getElementById('buttons').addEventListener('click', (e) => {
+      const button = e.target.closest('button');
+      if (!button) return;
+
+      if (button.dataset.number !== undefined) {
+        inputNumber(button.dataset.number);
+      } else if (button.dataset.operator) {
+        inputOperator(button.dataset.operator);
+      } else if (button.dataset.action) {
+        handleAction(button.dataset.action);
+      }
+    });
+
+    function inputNumber(num) {
+      if (shouldResetDisplay) {
+        currentValue = '';
+        shouldResetDisplay = false;
+      }
+      if (num === '.' && currentValue.includes('.')) return;
+      if (currentValue === '0' && num !== '.') {
+        currentValue = num;
+      } else {
+        currentValue += num;
+      }
+      updateDisplay();
+    }
+
+    function inputOperator(op) {
+      if (operator && !shouldResetDisplay) {
+        previousValue = String(calculate(parseFloat(previousValue), parseFloat(currentValue), operator));
+        expressionDisplay.textContent = previousValue + ' ' + getSymbol(op);
+      } else {
+        previousValue = currentValue;
+        expressionDisplay.textContent = currentValue + ' ' + getSymbol(op);
+      }
+      operator = op;
+      shouldResetDisplay = true;
+    }
+
+    function handleAction(action) {
+      switch (action) {
+        case 'clear':
+          currentValue = '0';
+          previousValue = '';
+          operator = null;
+          shouldResetDisplay = false;
+          expressionDisplay.textContent = '';
+          break;
+        case 'toggle-sign':
+          currentValue = String(-parseFloat(currentValue));
+          break;
+        case 'percent':
+          currentValue = String(parseFloat(currentValue) / 100);
+          break;
+        case 'equals':
+          if (operator && previousValue !== '') {
+            expressionDisplay.textContent =
+              previousValue + ' ' + getSymbol(operator) + ' ' + currentValue + ' =';
+            currentValue = String(calculate(parseFloat(previousValue), parseFloat(currentValue), operator));
+            operator = null;
+            previousValue = '';
+            shouldResetDisplay = true;
+          }
+          break;
+      }
+      updateDisplay();
+    }
+
+    function getSymbol(op) {
+      return { '+': '+', '-': '−', '*': '×', '/': '÷' }[op] || op;
+    }
+
+    function updateDisplay() {
+      display.textContent = currentValue;
+    }
+
+    // TODO(human): calculate 함수를 구현하세요
+    // 두 숫자(a, b)와 연산자(operator)를 받아 계산 결과를 반환합니다.
+    // 연산자: '+', '-', '*', '/'
+    // 0으로 나누기 등 예외 상황도 고려해보세요.
+    function calculate(a, b, operator) {
+
+    }
+  </script>
+</body>
+</html>

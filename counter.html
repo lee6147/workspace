@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카운터 앱</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <div class="bg-white rounded-2xl shadow-lg p-10 text-center">
+    <h1 class="text-lg font-semibold text-gray-500 mb-4">Counter</h1>
+    <div id="count" class="text-7xl font-bold text-gray-800 mb-8">0</div>
+    <div class="flex gap-3">
+      <button onclick="update(-1)"
+        class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition">
+        -1
+      </button>
+      <button onclick="reset()"
+        class="px-6 py-3 bg-blue-300 hover:bg-blue-400 text-white font-semibold rounded-lg transition">
+        Reset
+      </button>
+      <button onclick="update(1)"
+        class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition">
+        +1
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let count = 0;
+    const display = document.getElementById('count');
+
+    function update(delta) {
+      count += delta;
+      display.textContent = count;
+    }
+
+    function reset() {
+      count = 0;
+      display.textContent = count;
+    }
+  </script>
+</body>
+</html>

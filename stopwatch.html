@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스톱워치</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <div class="bg-white rounded-2xl shadow-lg p-10 text-center">
+    <h1 class="text-lg font-semibold text-gray-500 mb-4">Stopwatch</h1>
+
+    <!-- 시간 표시: 모노스페이스 폰트로 숫자 흔들림 방지 -->
+    <div id="display" class="text-7xl font-bold text-gray-800 mb-8 font-mono tracking-wide">
+      00:00:00
+    </div>
+
+    <div class="flex gap-3">
+      <button id="toggleBtn" onclick="toggle()"
+        class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition min-w-[120px]">
+        Start
+      </button>
+      <button onclick="reset()"
+        class="px-6 py-3 bg-blue-300 hover:bg-blue-400 text-white font-semibold rounded-lg transition min-w-[120px]">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let elapsed = 0;   // 누적 경과 시간 (ms)
+    let startTime = 0;  // 현재 구간 시작 시점
+    let timerId = null; // setInterval ID
+    let running = false;
+
+    const display = document.getElementById('display');
+    const toggleBtn = document.getElementById('toggleBtn');
+
+    function toggle() {
+      if (running) {
+        // 일시정지: 경과 시간 누적 후 타이머 정지
+        elapsed += Date.now() - startTime;
+        clearInterval(timerId);
+        toggleBtn.textContent = 'Start';
+      } else {
+        // 시작: 현재 시점 기록 후 10ms 간격으로 갱신
+        startTime = Date.now();
+        timerId = setInterval(updateDisplay, 10);
+        toggleBtn.textContent = 'Pause';
+      }
+      running = !running;
+    }
+
+    function reset() {
+      clearInterval(timerId);
+      elapsed = 0;
+      running = false;
+      toggleBtn.textContent = 'Start';
+      display.textContent = '00:00:00';
+    }
+
+    function updateDisplay() {
+      const total = elapsed + (Date.now() - startTime);
+
+      // ms → 시/분/초 변환
+      const hrs = Math.floor(total / 3600000);
+      const mins = Math.floor((total % 3600000) / 60000);
+      const secs = Math.floor((total % 60000) / 1000);
+
+      // 2자리 zero-padding
+      display.textContent =
+        String(hrs).padStart(2, '0') + ':' +
+        String(mins).padStart(2, '0') + ':' +
+        String(secs).padStart(2, '0');
+    }
+  </script>
+</body>
+</html>
