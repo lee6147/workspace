@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer className="w-full">
       <Separator />
-      <div className="container max-w-5xl py-8">
+      <div className="container mx-auto max-w-5xl py-8">
         {/* 상단: 프로젝트 정보 + 퀵링크 */}
         <div className="flex flex-col justify-between gap-6 sm:flex-row">
           <div className="space-y-1">
