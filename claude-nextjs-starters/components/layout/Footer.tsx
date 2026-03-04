@@ -32,7 +32,7 @@ export function Footer() {
         {/* 하단: 저작권 */}
         <Separator className="my-6" />
         <p className="text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+          &copy; {new Date().getFullYear()} {siteConfig.name}. 모든 권리 보유.
         </p>
       </div>
     </footer>

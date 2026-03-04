@@ -42,9 +42,7 @@ components/
 ├── layout/           # 레이아웃 컴포넌트 (Header, Footer 등)
 └── ui/               # shadcn/ui 컴포넌트
 config/
-└── site.ts           # 사이트 설정 (이름, 네비게이션)
-hooks/
-└── useMounted.ts     # 클라이언트 마운트 훅`
+└── site.ts           # 사이트 설정 (이름, 네비게이션)`
 
 export default function AboutPage() {
   return (

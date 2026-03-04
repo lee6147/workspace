@@ -1,10 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
-
-import { useBoolean } from "usehooks-ts"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -18,14 +17,13 @@ import {
 } from "@/components/ui/sheet"
 
 export function MobileNav() {
-  // usehooks-ts: useState 대신 의미 명확한 boolean 훅
-  const { value: open, setTrue: openSheet, setFalse: closeSheet, setValue: setOpen } = useBoolean(false)
+  const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" onClick={openSheet}>
+        <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
           <Menu className="h-5 w-5" />
           <span className="sr-only">메뉴 열기</span>
         </Button>
@@ -39,7 +37,7 @@ export function MobileNav() {
             <Link
               key={item.href}
               href={item.href}
-              onClick={closeSheet}
+              onClick={() => setOpen(false)}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-foreground/80",
                 pathname === item.href
