@@ -46,7 +46,7 @@ config/
 
 export default function AboutPage() {
   return (
-    <div className="container max-w-5xl py-16">
+    <div className="container mx-auto max-w-5xl py-16">
       {/* 히어로 섹션 */}
       <section className="flex flex-col items-center gap-4 text-center">
         <Badge variant="secondary" className="text-sm">

@@ -5,8 +5,6 @@ import { ThemeProvider } from "next-themes"
 import { siteConfig } from "@/config/site"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "@/components/ui/sonner"
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -44,11 +42,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TooltipProvider>
-            <div className="flex min-h-svh flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
+            {children}
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
